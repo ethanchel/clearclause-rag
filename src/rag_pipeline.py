@@ -30,7 +30,12 @@ from src.ingestion import process_directory
 
 load_dotenv()
 
-GENERATION_MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
+GENERATION_MODEL = "Qwen/Qwen2.5-7B-Instruct"
+# Smaller sibling of the API model, used as an automatic fallback when
+# the Inference API is unavailable (no token, or free credits used up).
+# Runs locally through transformers — slower and a bit less fluent than
+# the 7B, but keeps the whole pipeline working at zero cost.
+LOCAL_GENERATION_MODEL = "Qwen/Qwen2.5-1.5B-Instruct"
 TOP_K = 3
 # Minimum cosine similarity for a chunk to count as relevant. Below
 # this, the question is likely off-topic for the indexed documents and
@@ -73,16 +78,36 @@ def _get_retriever():
 
 
 @lru_cache(maxsize=1)
-def _get_client() -> InferenceClient:
-    """Create the Hugging Face Inference API client once per process."""
+def _get_client() -> InferenceClient | None:
+    """
+    Create the Hugging Face Inference API client once per process.
+    Returns None when no token is configured — generation then runs on
+    the local fallback model instead of failing.
+    """
     token = os.getenv("HF_TOKEN")
     if not token:
-        raise RuntimeError(
-            "HF_TOKEN is not set. Copy .env.example to .env and add your "
-            "Hugging Face token (on Hugging Face Spaces, add HF_TOKEN as a "
-            "Space secret)."
-        )
+        print("HF_TOKEN is not set — generation will use the local model.")
+        return None
     return InferenceClient(token=token)
+
+
+@lru_cache(maxsize=1)
+def _get_local_generator():
+    """
+    Load the local fallback generation model once per process. Uses
+    Apple Silicon GPU (MPS) when available, CPU otherwise.
+    """
+    import torch
+    from transformers import pipeline
+
+    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    print(f"Loading local generation model {LOCAL_GENERATION_MODEL} on {device}...")
+    return pipeline(
+        "text-generation",
+        model=LOCAL_GENERATION_MODEL,
+        device=device,
+        dtype="auto",
+    )
 
 
 def warm_up() -> None:
@@ -125,20 +150,51 @@ Cite the source and page number for your answer."""
     return prompt
 
 
-def _chat_completion(messages: list[dict], client: InferenceClient) -> str:
-    """Send a chat completion request and unwrap the answer text."""
-    try:
-        response = client.chat_completion(
-            messages=messages,
-            model=GENERATION_MODEL,
-            max_tokens=400,
-            temperature=0.2,  # low: we want grounded, consistent answers, not creative ones
-        )
-    except Exception as exc:
-        raise RuntimeError(
-            f"The generation request to the Hugging Face API failed: {exc}"
-        ) from exc
-    return response.choices[0].message.content
+# Set to True after the first "out of credits" (402) response so later
+# calls skip the doomed API round-trip and go straight to the local model.
+_api_disabled = False
+
+
+def _local_chat_completion(messages: list[dict]) -> str:
+    """Generate an answer with the local fallback model."""
+    generator = _get_local_generator()
+    output = generator(
+        messages,
+        max_new_tokens=400,
+        do_sample=False,  # deterministic: grounded answers, not creative ones
+        return_full_text=False,
+    )
+    return output[0]["generated_text"].strip()
+
+
+def _chat_completion(messages: list[dict], client: InferenceClient | None) -> str:
+    """
+    Send a chat completion request and unwrap the answer text.
+
+    The Inference API is tried first (best quality). If no token is
+    configured or the account has no credits left (HTTP 402), the local
+    fallback model takes over so the app keeps working at zero cost.
+    """
+    global _api_disabled
+
+    if client is not None and not _api_disabled:
+        try:
+            response = client.chat_completion(
+                messages=messages,
+                model=GENERATION_MODEL,
+                max_tokens=400,
+                temperature=0.2,  # low: we want grounded, consistent answers, not creative ones
+            )
+            return response.choices[0].message.content
+        except Exception as exc:
+            if "402" not in str(exc):
+                raise RuntimeError(
+                    f"The generation request to the Hugging Face API failed: {exc}"
+                ) from exc
+            _api_disabled = True
+            print("Inference API credits exhausted — switching to the local model.")
+
+    return _local_chat_completion(messages)
 
 
 def generate_answer(

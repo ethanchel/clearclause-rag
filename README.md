@@ -48,7 +48,7 @@ All source documents are public-domain or public-information based — no confid
 - **Language:** Python
 - **Embeddings:** sentence-transformers (`all-MiniLM-L6-v2`)
 - **Vector store:** FAISS (`IndexFlatIP` over normalized embeddings = cosine similarity)
-- **Generation:** Mistral-7B-Instruct via the Hugging Face Inference API
+- **Generation:** Qwen2.5-7B-Instruct via the Hugging Face Inference API, with automatic local fallback (Qwen2.5-1.5B-Instruct through transformers) when no token or no API credits are available
 - **Interface:** Gradio (chat + comparison + evaluation dashboard)
 - **Evaluation:** ROUGE + retrieval hit rates, RAG vs. LLM-only baseline
 - **Fine-tuning (bonus):** LoRA via PEFT on a lightweight open-source model
@@ -92,6 +92,7 @@ clearclause-rag/
    ```bash
    cp .env.example .env
    ```
+   The token enables generation through the Inference API (best quality). Without a token — or once the account's free API credits are used up — generation automatically falls back to a local model, so the app works either way.
 4. (Optional) Add more source PDF documents to `data/raw/`.
 
 ## Usage
@@ -116,8 +117,18 @@ Equivalent manual commands (from the project root, venv activated): `python app.
 
 ## Status
 
-✅ MVP functional — evaluation results pending.
+✅ MVP functional — evaluation complete.
 
 ## Evaluation Results
 
-_TODO — run `python -m evaluation.evaluate` and report the numbers here._
+Evaluated on the 20-question ground-truth set (3 documents), generation running on the local fallback model (Qwen2.5-1.5B-Instruct):
+
+| Metric | RAG | LLM-only baseline |
+|---|---|---|
+| Average ROUGE-1 F1 | **0.448** | 0.202 |
+| Retrieval hit rate (correct document) | **100%** | — |
+| Retrieval hit rate (exact page) | **85%** | — |
+
+The RAG pipeline more than doubles the answer quality of the same model without retrieval, and retrieves a chunk from the correct source document for every question. The 3/20 questions that miss the exact page all involve clauses spanning a page boundary — the relevant chunk is retrieved but carries the page number where it starts. The two questions where the baseline edges out RAG are short yes/no answers, where ROUGE's n-gram overlap penalizes the RAG answer's longer cited explanation — a known limitation of ROUGE as a correctness metric.
+
+Full per-question results: `evaluation/results.json` (also displayed in the app's Evaluation tab).

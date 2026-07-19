@@ -1,0 +1,182 @@
+[
+  {
+    "question": "What happens if I pay my rent late?",
+    "rag_answer": "If you pay your rent late, the Landlord may collect a fee of $5 on the 6th day of the month if you do not pay the full amount by the end of the 5th day. Additionally, the Landlord may collect $1 for each additional day the rent remains unpaid during the month it is due. The Landlord may not terminate the agreement for failure to pay late charges but can terminate the agreement for non-payment of rent.\n\nThis information comes from [Source: hud_model_lease_subsidized_programs.pdf, page 2].",
+    "rag_rouge1_f1": 0.5714285714285715,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "Paying rent late can have several consequences, depending on your rental agreement and local laws. Common outcomes include:\n\n1. Late fees: Your landlord may charge a late fee for payments received after the due date.\n\n2. Interest charges: Some agreements may include interest on late payments.\n\n3. Damage to your credit: Late payments can negatively impact your credit score.\n\n4. Eviction: In severe cases, repeated late payments may lead to eviction proceedings.\n\n5. Withholding of security deposit: Landlords might withhold part or all of your security deposit to cover late rent.\n\n6. Communication issues: Your landlord may communicate less frequently or strictly about future payments.\n\nTo avoid these issues, it's best to communicate with your landlord about any difficulties you're experiencing and try to make arrangements for timely payments.",
+    "baseline_rouge1_f1": 0.1627906976744186
+  },
+  {
+    "question": "Can the landlord evict me for not paying the late charges?",
+    "rag_answer": "No, the landlord cannot evict you for not paying the late charges. The document states that the landlord \"may not terminate this Agreement for failure to pay late charges, but may terminate this Agreement for non-payment of rent, as explained in paragraph 23.\" \n\nThis information is from [Source: hud_model_lease_subsidized_programs.pdf, page 2].",
+    "rag_rouge1_f1": 0.5609756097560975,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "The ability of a landlord to evict you for not paying late charges depends on the specific laws of your jurisdiction, the terms of your lease agreement, and the nature of the late charges.\n\n1. **Lease Agreement**: Check your lease for any clauses that address late fees and eviction. If your lease states that failure to pay late charges will result in eviction, the landlord may have a legal basis to proceed with eviction.\n\n2. **Local Laws**: Different regions have different laws regarding late fees and eviction. Some jurisdictions may have specific regulations about what constitutes a late fee and whether it can be a reason for eviction.\n\n3. **Communication**: Before proceeding with eviction, landlords are often required to give you a notice of non-payment and an opportunity to pay the late charges or rectify the issue. This is usually called a \"notice to cure\" or \"notice to pay.\"\n\n4. **Court Process**: If the landlord does decide to evict you, they will typically need to file an eviction lawsuit in court. You will have the opportunity to defend yourself and argue that the late charges were not properly assessed or that you have a valid reason for not paying them.\n\nIt's important to review your lease and local laws, and consider consulting with a legal professional if you are facing eviction.",
+    "baseline_rouge1_f1": 0.1532258064516129
+  },
+  {
+    "question": "When do I get my security deposit back?",
+    "rag_answer": "You will get your security deposit back after you move out of the unit. The Landlord will inspect the unit and determine if you are eligible for a refund. You must provide a 30-day written notice of your intent to move, unless you were unable to give the notice for reasons beyond your control. \n\nThis information comes from [Source: hud_model_lease_subsidized_programs.pdf, page 2].",
+    "rag_rouge1_f1": 0.35185185185185186,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "The timeframe for getting your security deposit back after moving out can vary depending on local laws and the terms of your lease agreement. Generally, you should receive your security deposit within a few weeks after the landlord has completed their inspection of the property and any necessary repairs have been made. \n\nHere are some common steps and timelines:\n\n1. **Move-Out Inspection**: The landlord will typically conduct an inspection of the property within a few days to a week after you move out. This helps determine if any deductions need to be made from the security deposit.\n\n2. **Repair and Cleaning**: If the landlord finds any damages or needs to make repairs, they will usually do so within a specified period (often 10-14 days). Once the repairs are completed, the landlord will reassess the property.\n\n3. **Return of Deposit**: After the final inspection, the landlord must return the remaining security deposit within a specified timeframe, which is often 14-30 days after the move-out date, depending on local laws.\n\n4. **Dispute Resolution**: If you or the landlord disagree about deductions, you may need to go through a dispute resolution process, which can extend the timeline.\n\nIt's important to review your lease agreement and local tenant laws to understand the specific requirements and timelines in your area. If you don't receive your deposit within the expected timeframe, you may have the right to file a complaint with your local housing authority or small claims court.",
+    "baseline_rouge1_f1": 0.18685121107266436
+  },
+  {
+    "question": "Can I install my own locks on the doors?",
+    "rag_answer": "No, you cannot install your own locks on the doors without the written permission of the Landlord. If the Landlord approves the installation, you must provide them with a key for each lock and return all keys when the lease ends. A fee may be charged for keys not returned.\n\nSource: hud_model_lease_subsidized_programs.pdf, page 3",
+    "rag_rouge1_f1": 0.5,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "Yes, you can install your own locks on doors, but there are a few considerations to keep in mind:\n\n1. **Tools and Skills**: Basic tools like screwdrivers, a drill, and a lockset are typically sufficient for most door lock installations. However, some locks may require more specialized tools or knowledge.\n\n2. **Compatibility**: Ensure that the lock you choose is compatible with the existing door and hardware. The lock should fit the strike plate on the door jamb and the keyhole should align with the existing keyhole.\n\n3. **Security**: Make sure the lock you install is secure and meets your security needs. Consider factors like the type of lock (deadbolt, lever, etc.), the quality of the materials, and any additional security features it may have.\n\n4. **Local Regulations**: Some areas have specific regulations regarding door locks, especially in rental properties or commercial buildings. Check local building codes and regulations to ensure compliance.\n\n5. **Doors and Frames**: Ensure that the door and frame are in good condition and can support the weight and pressure of the new lock. If the door or frame is damaged, it may need to be repaired or replaced before installing the lock.\n\n6. **Testing**: After installation, test the lock thoroughly to ensure it functions correctly and securely.\n\nIf you're not confident in your ability to install the lock yourself, consider hiring a professional locksmith or a handyman.",
+    "baseline_rouge1_f1": 0.12878787878787878
+  },
+  {
+    "question": "Am I allowed to have a pet in the unit?",
+    "rag_answer": "You are not allowed to have pets or animals of any kind in the unit without the prior written permission of the Landlord, subject to reasonable accommodation exceptions for disability. This is stated in the document on page 4, specifically in the section about general restrictions.",
+    "rag_rouge1_f1": 0.45901639344262296,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "I'm sorry, but without more context about which specific unit or property you're referring to, it's difficult for me to provide an accurate answer. Different buildings and properties may have different rules regarding pets. Some common considerations include:\n\n1. Pet restrictions: Many rental units prohibit pets due to space limitations.\n2. Lease terms: Check your lease agreement to see if there are any pet-related clauses.\n3. Building policies: The management company of the building might have their own guidelines.\n\nIf you're unsure, contacting the landlord or property manager directly would be the safest course of action. They should be able to give you clear information based on the specifics of your situation.",
+    "baseline_rouge1_f1": 0.09090909090909091
+  },
+  {
+    "question": "Can I sublet my apartment to someone else?",
+    "rag_answer": "Yes, you can sublet your apartment to someone else if it is allowed by the lease agreement. However, you need to obtain the landlord's written approval before doing so. This restriction is outlined in the text starting at page 4 of the document titled \"hud_model_lease_subsidized_programs.pdf\".",
+    "rag_rouge1_f1": 0.17910447761194026,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "Yes, you generally have the right to sublet your apartment if it's part of a rental agreement and there are no specific terms prohibiting such an arrangement. However, you should check with your landlord or property management company first to ensure they're comfortable with the idea and that any necessary paperwork is completed properly. Subleasing requires notifying them in advance and often involves signing additional lease agreements or modifying existing ones. Always be transparent about the new tenant and their intentions for the space.",
+    "baseline_rouge1_f1": 0.2352941176470588
+  },
+  {
+    "question": "How much notice must I receive before a new house rule applies?",
+    "rag_answer": "According to the document, you must be given at least 30 days' written notice before a new house rule applies. This requirement is stated in Rule 14, specifically under \"Rules: The Tenant agrees to obey the House Rules which are Attachment No. 3 to this Agreement, as well as additional rules established after the effective date of this Agreement.\"",
+    "rag_rouge1_f1": 0.46153846153846156,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "The amount of notice required for a new house rule to apply varies depending on local laws and regulations, as well as specific housing agreements or lease terms. Generally, landlords are required to provide tenants with at least 30 days' written notice when making significant changes to the living environment, such as altering the layout of common areas or implementing new rules that affect all residents. However, some jurisdictions may have stricter requirements in place. It's important for tenants to review their lease agreement carefully and consult with a legal professional if they have any questions about the specifics of how long they need to be informed before new rules take effect.",
+    "baseline_rouge1_f1": 0.30344827586206896
+  },
+  {
+    "question": "Can the landlord enter my apartment whenever they want?",
+    "rag_answer": "Based on the information provided in the context passage, landlords can enter the tenant's apartment under certain conditions:\n- During reasonable hours.\n- To provide reasonable advance notice of their intention to enter.\n- After receiving the tenant's consent, except in urgent situations.\nTherefore, landlords cannot enter the apartment without following these specific guidelines.",
+    "rag_rouge1_f1": 0.47368421052631576,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "Yes, landlords typically have the right to enter your apartment for various reasons such as maintenance or repairs, but they must follow certain legal procedures and often need a valid reason like an emergency situation. It's important to review your lease agreement carefully to understand exactly what rights the landlord has regarding access to your property.",
+    "baseline_rouge1_f1": 0.24999999999999994
+  },
+  {
+    "question": "What are the penalties for giving false information about my income?",
+    "rag_answer": "According to the HUD Model Lease Subsidized Programs PDF (page 6), knowingly providing the landlord with false information related to income or other factors affecting tenant eligibility and rent can lead to termination of the tenancy. This action constitutes material non-compliance with the lease agreement. As a consequence, there could be federal penalties such as fines up to $10,000 and imprisonment for up to five years. Additionally, if the property is damaged due to hazards undertaken by the tenant or their guests, they would be responsible for rent until the damage is repaired.",
+    "rag_rouge1_f1": 0.4852941176470588,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "I'm sorry, but I cannot provide legal advice or discuss specific cases involving financial crimes. It's important to consult with a qualified attorney who specializes in tax law if you have concerns about reporting your income accurately. They can offer guidance tailored to your situation and help ensure compliance with relevant laws and regulations.",
+    "baseline_rouge1_f1": 0.22680412371134023
+  },
+  {
+    "question": "What happens to my rent if the unit is destroyed by fire?",
+    "rag_answer": "If the unit is damaged by fire and cannot be lived in, the Tenant will be responsible for rent only up to the date of the destruction according to paragraph 24 of the lease agreement.",
+    "rag_rouge1_f1": 0.7012987012987013,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "If a rental property is destroyed by fire, the landlord may be required to replace or repair it at their own expense. The tenant would typically have to vacate the premises until repairs are completed and the building is safe for re-occupancy. In some cases, landlords might offer compensation for damages, but this varies depending on local laws and agreements between parties. It's important for tenants to review lease terms and seek legal advice before any damage occurs.",
+    "baseline_rouge1_f1": 0.34426229508196726
+  },
+  {
+    "question": "How old do I have to be to create an account?",
+    "rag_answer": "According to the document, you must be at least 13 years old to create an account on the Service. This is stated in the first paragraph of the Terms of Service (page 1).",
+    "rag_rouge1_f1": 0.41379310344827586,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "I'm sorry, but I don't have specific information about age requirements for creating accounts on particular websites or services. The minimum age required to create a profile typically varies by platform and may depend on factors such as country laws, content restrictions, and user community guidelines. It's always best to check the individual website's terms of service or contact their customer support directly for accurate and up-to-date information regarding age verification processes.",
+    "baseline_rouge1_f1": 0.1553398058252427
+  },
+  {
+    "question": "Will I be warned before the terms of service change?",
+    "rag_answer": "No, users will be notified of material changes at least 30 days before they take effect, as stated in Source [1], page 1.",
+    "rag_rouge1_f1": 0.5416666666666667,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "I'm sorry, but I don't have specific information about whether or not users will be notified in advance when terms of service changes occur on a particular platform or website. This would depend on the policies and practices of that particular organization. Generally speaking, companies may choose to inform their users through official channels such as email announcements, blog posts, or other communication methods if they are making significant changes to their terms of service. However, it's always a good idea for users to regularly check the site or app for updates and to review any new terms carefully before accepting them.",
+    "baseline_rouge1_f1": 0.2
+  },
+  {
+    "question": "Who owns the content I upload to the platform?",
+    "rag_answer": "The owner of the content you upload is you, as stated in the first passage: \"You retain ownership of the content you submit to the Service.\"",
+    "rag_rouge1_f1": 0.32432432432432434,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "The ownership of uploaded content on a platform typically depends on the specific terms and conditions set by that particular service or website. Generally, users have copyright over their own original works they create and post online. However, there are exceptions:\n\n1. **Public Domain Content**: If your content is in the public domain (e.g., old photographs, music from before copyright protection), it does not belong to anyone.\n\n2. **Creative Commons Licenses**: Some platforms allow for Creative Commons licenses where creators retain some rights but grant others permission to use their work under certain conditions.\n\n3. **Service Terms**: The platform's terms of service may specify who retains ownership of user-generated content. For example, many social media sites like Facebook and Twitter state that they own any content posted by users unless otherwise specified.\n\n4. **User Agreements**: Users often agree to terms when creating an account with a platform, which might include clauses about ownership of content.\n\nWithout specific information about the platform you're referring to, it's difficult to give a definitive answer. Always check the platform's policies regarding user-generated content.",
+    "baseline_rouge1_f1": 0.20512820512820512
+  },
+  {
+    "question": "Can my account be terminated without warning?",
+    "rag_answer": "Yes, your account can be terminated immediately and without prior notice in cases of serious abuse, unlawful activity, or a risk to the security of the Service or its users. This information is found on page 1 of the website_terms_of_service.pdf.",
+    "rag_rouge1_f1": 0.4705882352941176,
+    "retrieval_hit": true,
+    "page_hit": false,
+    "baseline_answer": "I'm sorry, but I don't have enough information to answer your question accurately. The ability of an account to be terminated without warning depends on various factors such as the terms and conditions of service for that particular platform or website, local laws regarding data protection and privacy, and the specific policies of the company managing the account. It's important to review these details carefully before making any decisions about terminating an account. If you're concerned about potential termination, it might be helpful to contact customer support directly for clarification on their policy.",
+    "baseline_rouge1_f1": 0.1739130434782609
+  },
+  {
+    "question": "How is the operator's liability limited?",
+    "rag_answer": "According to the terms of service (page 1), the operator limits their liability for claims arising from the use of the Service to either the amount you paid for the Service in the previous year, or $100 USD, whichever is higher.",
+    "rag_rouge1_f1": 0.5507246376811594,
+    "retrieval_hit": true,
+    "page_hit": false,
+    "baseline_answer": "Operator's liability is typically limited by various laws and regulations in different jurisdictions around the world. In general, operators are responsible for their actions while operating a vehicle or other means of transportation. However, there are often limitations on this responsibility:\n\n1. Statutory limits: Many countries have specific statutes that limit an operator's liability to certain amounts. For example, in some places, an operator may be liable only up to a certain monetary value per accident.\n\n2. Comparative negligence: Some states allow for comparative negligence, where if the victim is partially at fault, they may still recover damages from the negligent party.\n\n3. Contributory negligence: This rule holds all parties equally responsible regardless of who was more at fault, potentially barring recovery entirely.\n\n4. Strict liability: In some cases, especially with dangerous goods transport, strict liability might apply, meaning the operator could face significant penalties even if they were not directly at fault.\n\n5. Insurance coverage: Liability insurance can provide financial protection against legal claims, but it doesn't eliminate the risk of personal injury or property damage.\n\n6. Limitations based on type of operation: Certain types of operations (like commercial trucking) may have stricter rules regarding liability than others.\n\n7. Age restrictions: Operators may be restricted by age or experience level depending on local regulations.\n\n8. Professional licensing requirements: Licensing authorities may impose additional responsibilities or liabilities on those holding licenses.\n\nThe specifics vary widely between countries and regions, so consulting local laws and regulations would be essential for understanding how exactly operator liability is limited in your particular jurisdiction.",
+    "baseline_rouge1_f1": 0.10996563573883161
+  },
+  {
+    "question": "What is the maximum flood insurance coverage for a residential building?",
+    "rag_answer": "According to the summary, the maximum flood insurance coverage for a residential building under the Standard Flood Insurance Policy is $250,000 USD. This information is found on page 1 of the document.",
+    "rag_rouge1_f1": 0.31746031746031744,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "The maximum flood insurance coverage for a residential building typically depends on several factors, including the location of the property and local regulations. However, in many areas, the standard policy limits are set by federal guidelines.\n\nFor example:\n\n1. In the United States, the National Flood Insurance Program (NFIP) sets minimum coverage levels:\n   - For one story buildings: $250,000 per dwelling\n   - For multi-story buildings: $375,000 per dwelling\n\n2. Some states have higher mandatory minimums or allow for additional coverage through private policies.\n\n3. The actual amount that can be insured varies based on the specific risk assessment and the insurer's underwriting standards.\n\n4. It's important to note that while these figures represent the minimum required coverage, they do not guarantee full protection against all potential losses from flooding.\n\nTo get accurate information tailored to your specific situation, it would be advisable to contact an insurance agent or visit the NFIP website for current rates and coverage options in your area.",
+    "baseline_rouge1_f1": 0.16494845360824742
+  },
+  {
+    "question": "How long is the waiting period before flood coverage begins?",
+    "rag_answer": "The waiting period before flood coverage begins is 30 days. This information is found on page 2 of the document \"nfip_flood_insurance_summary.pdf\".",
+    "rag_rouge1_f1": 0.34375,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "The length of the waiting period for flood coverage to begin varies depending on the specific insurance policy and provider. Generally, it's a few days after the initial claim filing process has been completed. However, this timeframe can be extended if there are additional steps required by the insurer or if the damage is extensive. It's important to check with your insurance company directly for their specific guidelines regarding the waiting period for flood coverage.",
+    "baseline_rouge1_f1": 0.3103448275862069
+  },
+  {
+    "question": "Are my belongings in the basement covered against flooding?",
+    "rag_answer": "No, your belongings in the basement are not covered against flooding under this policy. The policy specifically excludes carpets, books, clothes, electronics, and furniture stored in the basement. Additionally, it mentions that certain valuable items like artwork and fur coats are covered only up to $2,500 combined.",
+    "rag_rouge1_f1": 0.42857142857142855,
+    "retrieval_hit": true,
+    "page_hit": false,
+    "baseline_answer": "I'm sorry, but I don't have enough information to determine if your belongings are covered against flooding in the basement. To know this, you would need to check with the insurance company that provides coverage for your home or contact their customer service directly. They will be able to provide specific details about what is included and excluded from your policy. If you're unsure how to proceed, it might be helpful to consult a professional insurance agent who can guide you through the process of verifying your coverage.",
+    "baseline_rouge1_f1": 0.15748031496062992
+  },
+  {
+    "question": "Does flood insurance pay for temporary housing while my home is repaired?",
+    "rag_answer": "No, flood insurance does not directly cover temporary housing while your home is being repaired. The passage states that if your home is substantially damaged by a flood, increased cost of compliance coverage can provide up to $30,000 to help pay the costs of bringing the building into compliance with state or community floodplain management laws. However, this amount is additional to the building claim payment and the total payout for building coverage cannot exceed the $250,000 program maximum. For temporary housing, you would need to seek assistance through other means, such as government programs or private organizations.",
+    "rag_rouge1_f1": 0.1896551724137931,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "Yes, flood insurance typically pays for temporary housing during repairs to your damaged property. This coverage helps cover expenses such as living in a hotel or other accommodations while your home is being rebuilt. However, it's important to note that the specific details and limitations of this benefit may vary depending on the type of policy you have and any additional terms included with your insurance contract. Always review your policy documents carefully before making decisions about where to stay temporarily.",
+    "baseline_rouge1_f1": 0.22448979591836735
+  },
+  {
+    "question": "How long do I have to file a proof of loss after a flood?",
+    "rag_answer": "According to the information provided in the context, you must send the insurer a signed and sworn proof of loss within 60 days of the date of loss. This requirement is mentioned on page 2 of the \"nfip_flood_insurance_summary.pdf\" document.",
+    "rag_rouge1_f1": 0.6285714285714286,
+    "retrieval_hit": true,
+    "page_hit": true,
+    "baseline_answer": "The time limit for filing a proof of loss after a flood depends on your insurance policy and local regulations. Generally, most policies require that you report the damage within 24 hours of discovering it. However, some policies may allow up to seven days or even longer if there are extenuating circumstances such as severe weather conditions. It's important to check your specific policy details and consult with your insurance agent or adjuster for guidance tailored to your situation.",
+    "baseline_rouge1_f1": 0.26168224299065423
+  }
+]
