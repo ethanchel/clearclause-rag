@@ -110,10 +110,14 @@ Equivalent manual commands (from the project root, venv activated): `python app.
 
 ## Deployment (Hugging Face Spaces)
 
+The project is deploy-ready for Hugging Face Spaces — the YAML header of this README configures the Space, `app.py` at the root is the entry point, and the FAISS index is built automatically on first startup from the PDFs in `data/raw/`.
+
+> **Note:** as of mid-2026, hosting Gradio Spaces (even on the free CPU tier) requires a Hugging Face PRO subscription. The steps below work as-is on a PRO account; without one, the app runs locally with `./run.sh`.
+
 1. Create a new Space (SDK: **Gradio**).
-2. Push this repository to the Space (the YAML header of this README configures the Space; `app.py` at the root is the entry point).
-3. In the Space settings, add a secret named `HF_TOKEN` with your Hugging Face token (used for the Inference API).
-4. On first startup the Space builds the FAISS index from the PDFs in `data/raw/` automatically.
+2. Push this repository to the Space.
+3. In the Space settings, add a **secret** named `HF_TOKEN` with your Hugging Face token — secrets are stored encrypted by Hugging Face and injected as environment variables at runtime, so the token never appears in the repository or the logs.
+4. On first startup the Space builds the index, then serves the app.
 
 ## Status
 
