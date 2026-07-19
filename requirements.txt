@@ -1,6 +1,9 @@
 pypdf
 sentence-transformers
-faiss-cpu
+# Recent faiss-cpu releases no longer ship prebuilt wheels for Intel
+# macOS; pin the last version that does, only on that platform.
+faiss-cpu==1.8.0.post1; platform_system == "Darwin" and platform_machine == "x86_64"
+faiss-cpu; platform_system != "Darwin" or platform_machine != "x86_64"
 huggingface_hub
 python-dotenv
 gradio
