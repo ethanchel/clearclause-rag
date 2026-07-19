@@ -1,0 +1,9 @@
+pypdf
+sentence-transformers
+faiss-cpu
+huggingface_hub
+python-dotenv
+gradio
+pandas
+numpy
+rouge-score
