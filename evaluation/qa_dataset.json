@@ -1,8 +1,122 @@
 [
   {
-    "question": "Example: Can I cancel my lease before the end of the contract?",
-    "expected_answer": "Example: Yes, with a minimum notice period as specified in the termination clause.",
-    "expected_source": "example_lease.pdf",
+    "question": "What happens if I pay my rent late?",
+    "expected_answer": "If the full rent is not paid by the end of the 5th day of the month, the landlord may charge a $5 fee on the 6th day, plus $1 for each additional day the rent remains unpaid during that month.",
+    "expected_source": "hud_model_lease_subsidized_programs.pdf",
+    "expected_page": 2
+  },
+  {
+    "question": "Can the landlord evict me for not paying the late charges?",
+    "expected_answer": "No. The landlord may not terminate the agreement for failure to pay late charges, but may terminate it for non-payment of the rent itself.",
+    "expected_source": "hud_model_lease_subsidized_programs.pdf",
+    "expected_page": 2
+  },
+  {
+    "question": "When do I get my security deposit back?",
+    "expected_answer": "The deposit is refunded after the tenant has permanently moved out, returned possession of the unit to the landlord, and given the landlord their new address. The landlord also provides a written list of any charges subtracted from the deposit.",
+    "expected_source": "hud_model_lease_subsidized_programs.pdf",
+    "expected_page": 3
+  },
+  {
+    "question": "Can I install my own locks on the doors?",
+    "expected_answer": "No. The tenant may not install additional or different locks or gates on doors or windows without the landlord's written permission, and must give the landlord a key for each approved lock.",
+    "expected_source": "hud_model_lease_subsidized_programs.pdf",
+    "expected_page": 3
+  },
+  {
+    "question": "Am I allowed to have a pet in the unit?",
+    "expected_answer": "Not without the landlord's prior written permission, subject to reasonable accommodation exceptions for disability.",
+    "expected_source": "hud_model_lease_subsidized_programs.pdf",
+    "expected_page": 4
+  },
+  {
+    "question": "Can I sublet my apartment to someone else?",
+    "expected_answer": "No. The tenant agrees not to sublet or assign the unit or any part of it.",
+    "expected_source": "hud_model_lease_subsidized_programs.pdf",
+    "expected_page": 4
+  },
+  {
+    "question": "How much notice must I receive before a new house rule applies?",
+    "expected_answer": "The tenant must receive written notice at least 30 days before a new rule is enforced, and the rule must be reasonably related to the safety, care and cleanliness of the building.",
+    "expected_source": "hud_model_lease_subsidized_programs.pdf",
+    "expected_page": 4
+  },
+  {
+    "question": "Can the landlord enter my apartment whenever they want?",
+    "expected_answer": "No. The landlord agrees to enter only during reasonable hours, with reasonable advance notice and the tenant's consent, except in urgent situations.",
+    "expected_source": "hud_model_lease_subsidized_programs.pdf",
+    "expected_page": 5
+  },
+  {
+    "question": "What are the penalties for giving false information about my income?",
+    "expected_answer": "Knowingly giving false information about income or eligibility is a material noncompliance with the lease that can lead to termination of tenancy, and may result in federal penalties including fines up to $10,000 and imprisonment for up to five years.",
+    "expected_source": "hud_model_lease_subsidized_programs.pdf",
+    "expected_page": 6
+  },
+  {
+    "question": "What happens to my rent if the unit is destroyed by fire?",
+    "expected_answer": "If the unit is damaged by fire, wind or rain to the point that it cannot be lived in, and the damage was not caused by the tenant, the tenant is responsible for rent only up to the date of the destruction.",
+    "expected_source": "hud_model_lease_subsidized_programs.pdf",
+    "expected_page": 6
+  },
+  {
+    "question": "How old do I have to be to create an account?",
+    "expected_answer": "You must be at least 13 years old to create an account, and users under 18 must have permission from a parent or legal guardian.",
+    "expected_source": "website_terms_of_service.pdf",
+    "expected_page": 1
+  },
+  {
+    "question": "Will I be warned before the terms of service change?",
+    "expected_answer": "Yes. Users are notified of material changes at least 30 days before they take effect, by email or by a prominent notice on the service.",
+    "expected_source": "website_terms_of_service.pdf",
+    "expected_page": 1
+  },
+  {
+    "question": "Who owns the content I upload to the platform?",
+    "expected_answer": "You keep ownership of your content, but you grant the operator a worldwide, non-exclusive, royalty-free license to host, store, reproduce and display it solely to operate and improve the service. The license ends when you delete your content or account, except backups deleted within 90 days.",
+    "expected_source": "website_terms_of_service.pdf",
+    "expected_page": 1
+  },
+  {
+    "question": "Can my account be terminated without warning?",
+    "expected_answer": "In general no: for a material breach the operator must give written notice and, if the breach can be corrected, at least 14 days to correct it. Immediate termination without notice is reserved for serious abuse, unlawful activity or security risks.",
+    "expected_source": "website_terms_of_service.pdf",
+    "expected_page": 2
+  },
+  {
+    "question": "How is the operator's liability limited?",
+    "expected_answer": "Total liability for any claim is limited to the greater of the amount paid for the service in the 12 months before the claim, or 100 US dollars.",
+    "expected_source": "website_terms_of_service.pdf",
+    "expected_page": 2
+  },
+  {
+    "question": "What is the maximum flood insurance coverage for a residential building?",
+    "expected_answer": "Building Property coverage insures a residential building up to a maximum of $250,000, and Personal Property (contents) coverage up to $100,000, each purchased separately with its own deductible.",
+    "expected_source": "nfip_flood_insurance_summary.pdf",
+    "expected_page": 1
+  },
+  {
+    "question": "How long is the waiting period before flood coverage begins?",
+    "expected_answer": "There is typically a 30-day waiting period between purchase and the start of coverage, except when the policy is purchased in connection with making, increasing, extending or renewing a mortgage loan, in which case coverage can begin immediately.",
+    "expected_source": "nfip_flood_insurance_summary.pdf",
+    "expected_page": 1
+  },
+  {
+    "question": "Are my belongings in the basement covered against flooding?",
+    "expected_answer": "Mostly not. In a basement the policy covers cleanup and items like furnaces, water heaters, washers and dryers, but it does not cover most personal belongings such as clothing, electronics and furniture kept in a basement.",
+    "expected_source": "nfip_flood_insurance_summary.pdf",
+    "expected_page": 2
+  },
+  {
+    "question": "Does flood insurance pay for temporary housing while my home is repaired?",
+    "expected_answer": "No. Living expenses such as temporary housing are not covered by the Standard Flood Insurance Policy.",
+    "expected_source": "nfip_flood_insurance_summary.pdf",
+    "expected_page": 2
+  },
+  {
+    "question": "How long do I have to file a proof of loss after a flood?",
+    "expected_answer": "You must send the insurer a signed and sworn proof of loss within 60 days of the date of loss, with the amount claimed and supporting documentation.",
+    "expected_source": "nfip_flood_insurance_summary.pdf",
     "expected_page": 2
   }
 ]

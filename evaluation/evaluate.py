@@ -48,6 +48,18 @@ def retrieval_hit(sources: list[dict], expected_source: str) -> bool:
     return any(s["source"] == expected_source for s in sources)
 
 
+def page_hit(sources: list[dict], expected_source: str, expected_page: int) -> bool:
+    """
+    Stricter version of retrieval_hit: did the retrieved chunks include
+    a chunk from the expected page of the expected document? This is
+    the metric that validates the "cite the exact page" feature.
+    """
+    return any(
+        s["source"] == expected_source and s["page"] == expected_page
+        for s in sources
+    )
+
+
 def run_evaluation(qa_dataset: list[dict]) -> list[dict]:
     results = []
 
@@ -55,12 +67,18 @@ def run_evaluation(qa_dataset: list[dict]) -> list[dict]:
         question = item["question"]
         expected_answer = item["expected_answer"]
         expected_source = item.get("expected_source")
+        expected_page = item.get("expected_page")
 
         # RAG answer
         rag_result = answer_question(question)
         rag_answer = rag_result["answer"]
         rag_rouge = compute_rouge(rag_answer, expected_answer)
         hit = retrieval_hit(rag_result["sources"], expected_source) if expected_source else None
+        p_hit = (
+            page_hit(rag_result["sources"], expected_source, expected_page)
+            if expected_source and expected_page
+            else None
+        )
 
         # Baseline: LLM without any retrieved context
         baseline_answer = answer_without_rag(question)
@@ -71,6 +89,7 @@ def run_evaluation(qa_dataset: list[dict]) -> list[dict]:
             "rag_answer": rag_answer,
             "rag_rouge1_f1": rag_rouge["rouge1_f1"],
             "retrieval_hit": hit,
+            "page_hit": p_hit,
             "baseline_answer": baseline_answer,
             "baseline_rouge1_f1": baseline_rouge["rouge1_f1"],
         })
@@ -84,12 +103,16 @@ def summarize(results: list[dict]) -> None:
     avg_baseline = sum(r["baseline_rouge1_f1"] for r in results) / n
     hits = [r["retrieval_hit"] for r in results if r["retrieval_hit"] is not None]
     hit_rate = sum(hits) / len(hits) if hits else None
+    p_hits = [r["page_hit"] for r in results if r["page_hit"] is not None]
+    page_hit_rate = sum(p_hits) / len(p_hits) if p_hits else None
 
     print(f"\n=== Evaluation summary ({n} questions) ===")
     print(f"Average ROUGE-1 F1 — RAG:      {avg_rag:.3f}")
     print(f"Average ROUGE-1 F1 — Baseline: {avg_baseline:.3f}")
     if hit_rate is not None:
-        print(f"Retrieval hit rate: {hit_rate:.1%}")
+        print(f"Retrieval hit rate (document): {hit_rate:.1%}")
+    if page_hit_rate is not None:
+        print(f"Retrieval hit rate (exact page): {page_hit_rate:.1%}")
 
 
 if __name__ == "__main__":

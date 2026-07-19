@@ -15,9 +15,14 @@ Why chunking matters for RAG:
   (e.g. a sentence that gets cut in half between two chunks).
 """
 
+import re
 from pathlib import Path
 from dataclasses import dataclass
 from pypdf import PdfReader
+
+# Sentence boundaries: split after ., !, ? or ; / : followed by whitespace.
+# Good enough for legal prose, which is heavily punctuated.
+_SENTENCE_END = re.compile(r"(?<=[.!?;:])\s+")
 
 
 @dataclass
@@ -53,27 +58,55 @@ def chunk_text(
     overlap: int = 100,
 ) -> list[str]:
     """
-    Split text into overlapping chunks of approximately `chunk_size`
-    characters, with `overlap` characters shared between consecutive
-    chunks.
+    Split text into overlapping chunks of at most `chunk_size` characters,
+    cutting on sentence boundaries rather than raw character counts.
 
-    This is a simple character-based splitter. A more advanced version
-    could split on sentence boundaries instead of raw character counts
-    (worth exploring later if retrieval quality isn't good enough).
+    Cutting mid-sentence hurts retrieval: the embedding of a chunk that
+    starts or ends with half a sentence is noisier, and the retrieved
+    passage shown to the user (and the LLM) is harder to read. Instead,
+    whole sentences are packed into a chunk until adding one more would
+    exceed `chunk_size`. The last few sentences (up to `overlap`
+    characters) are carried over into the next chunk so context isn't
+    lost at the boundary.
     """
     if chunk_size <= overlap:
         raise ValueError("chunk_size must be greater than overlap")
 
-    chunks = []
-    start = 0
-    text_length = len(text)
+    sentences = [s.strip() for s in _SENTENCE_END.split(text) if s.strip()]
 
-    while start < text_length:
-        end = start + chunk_size
-        chunk = text[start:end].strip()
-        if chunk:
-            chunks.append(chunk)
-        start += chunk_size - overlap  # move forward, keeping overlap
+    # Safety net: a "sentence" longer than chunk_size (e.g. a table or a
+    # run-on clause with no punctuation) is force-split by characters so
+    # no chunk can ever exceed the embedding model's comfort zone.
+    pieces: list[str] = []
+    for sentence in sentences:
+        while len(sentence) > chunk_size:
+            pieces.append(sentence[:chunk_size])
+            sentence = sentence[chunk_size - overlap:]
+        pieces.append(sentence)
+
+    chunks: list[str] = []
+    current: list[str] = []
+    current_len = 0
+
+    for piece in pieces:
+        if current and current_len + len(piece) + 1 > chunk_size:
+            chunks.append(" ".join(current))
+            # Keep the trailing sentences (up to `overlap` chars) as the
+            # start of the next chunk.
+            kept: list[str] = []
+            kept_len = 0
+            for prev in reversed(current):
+                if kept_len + len(prev) + 1 > overlap:
+                    break
+                kept.insert(0, prev)
+                kept_len += len(prev) + 1
+            current = kept
+            current_len = kept_len
+        current.append(piece)
+        current_len += len(piece) + 1
+
+    if current:
+        chunks.append(" ".join(current))
 
     return chunks
 
@@ -136,7 +169,7 @@ def process_directory(
 
 
 if __name__ == "__main__":
-    # Quick manual test: run `python src/ingestion.py` from the project
+    # Quick manual test: run `python -m src.ingestion` from the project
     # root after adding at least one PDF to data/raw/
     chunks = process_directory()
     print(f"\nTotal chunks across all documents: {len(chunks)}")

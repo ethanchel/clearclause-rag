@@ -4,24 +4,99 @@ rag_pipeline.py
 Ties retrieval (FAISS + embeddings) together with generation (an LLM
 via the Hugging Face Inference API) to answer user questions about
 the ingested documents, grounded in the retrieved source passages.
+
+Performance note: the embedding model and the FAISS index are loaded
+once per process (lazily, on the first question) and reused for every
+subsequent question. Loading them per query would add several seconds
+of latency to each answer for no benefit — only the search and the
+LLM call actually depend on the question.
 """
 
 import os
+from functools import lru_cache
+
 from dotenv import load_dotenv
 from huggingface_hub import InferenceClient
 
-from src.embeddings import get_embedding_model, load_index, search
+from src.embeddings import (
+    build_faiss_index,
+    embed_chunks,
+    get_embedding_model,
+    load_index,
+    save_index,
+    search,
+)
+from src.ingestion import process_directory
 
 load_dotenv()
 
 GENERATION_MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
 TOP_K = 3
+# Minimum cosine similarity for a chunk to count as relevant. Below
+# this, the question is likely off-topic for the indexed documents and
+# it's more honest to say "nothing found" than to let the LLM improvise
+# on unrelated passages.
+MIN_SCORE = 0.25
+# How many previous conversation turns to pass back to the LLM so it
+# can resolve follow-up questions ("and what about the deposit?").
+MAX_HISTORY_MESSAGES = 6
 
 SYSTEM_PROMPT = """You are ClearClause, an assistant that explains legal and \
 administrative documents in plain, simple language. You must ONLY use the \
 provided source passages to answer — never rely on outside knowledge. If the \
 passages don't contain the answer, say so clearly instead of guessing. \
 Always mention which source and page the answer comes from."""
+
+
+@lru_cache(maxsize=1)
+def _get_retriever():
+    """
+    Load the embedding model and the FAISS index exactly once per
+    process. lru_cache turns this into a lazy singleton: the first call
+    pays the loading cost, every later call returns the cached objects.
+
+    If no index exists yet (e.g. first launch on a fresh Hugging Face
+    Space), it is built automatically from the PDFs in data/raw/.
+    """
+    model = get_embedding_model()
+    try:
+        index, metadata = load_index()
+    except FileNotFoundError:
+        print("No index found — building it from data/raw/ ...")
+        chunks = process_directory()
+        if not chunks:
+            raise
+        index = build_faiss_index(embed_chunks(chunks, model))
+        save_index(index, chunks)
+        index, metadata = load_index()
+    return model, index, metadata
+
+
+@lru_cache(maxsize=1)
+def _get_client() -> InferenceClient:
+    """Create the Hugging Face Inference API client once per process."""
+    token = os.getenv("HF_TOKEN")
+    if not token:
+        raise RuntimeError(
+            "HF_TOKEN is not set. Copy .env.example to .env and add your "
+            "Hugging Face token (on Hugging Face Spaces, add HF_TOKEN as a "
+            "Space secret)."
+        )
+    return InferenceClient(token=token)
+
+
+def warm_up() -> None:
+    """
+    Preload the embedding model and index so the first user question
+    doesn't pay the loading cost. Called at app startup.
+    """
+    _get_retriever()
+
+
+def list_documents() -> list[str]:
+    """Return the filenames of all indexed documents (for the UI selector)."""
+    _, _, metadata = _get_retriever()
+    return sorted({m["source"] for m in metadata})
 
 
 def build_prompt(question: str, retrieved_chunks: list[dict]) -> str:
@@ -50,46 +125,78 @@ Cite the source and page number for your answer."""
     return prompt
 
 
-def generate_answer(question: str, retrieved_chunks: list[dict], client: InferenceClient) -> str:
-    """
-    Call the LLM with the system prompt + the augmented user prompt,
-    and return the generated answer.
-    """
-    user_prompt = build_prompt(question, retrieved_chunks)
-
-    response = client.chat_completion(
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": user_prompt},
-        ],
-        model=GENERATION_MODEL,
-        max_tokens=400,
-        temperature=0.2,  # low: we want grounded, consistent answers, not creative ones
-    )
+def _chat_completion(messages: list[dict], client: InferenceClient) -> str:
+    """Send a chat completion request and unwrap the answer text."""
+    try:
+        response = client.chat_completion(
+            messages=messages,
+            model=GENERATION_MODEL,
+            max_tokens=400,
+            temperature=0.2,  # low: we want grounded, consistent answers, not creative ones
+        )
+    except Exception as exc:
+        raise RuntimeError(
+            f"The generation request to the Hugging Face API failed: {exc}"
+        ) from exc
     return response.choices[0].message.content
 
 
-def answer_question(question: str, top_k: int = TOP_K) -> dict:
+def generate_answer(
+    question: str,
+    retrieved_chunks: list[dict],
+    client: InferenceClient,
+    history: list[dict] | None = None,
+) -> str:
+    """
+    Call the LLM with the system prompt, the recent conversation
+    history (so follow-up questions make sense) and the augmented
+    user prompt, and return the generated answer.
+    """
+    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    if history:
+        messages.extend(history[-MAX_HISTORY_MESSAGES:])
+    messages.append({"role": "user", "content": build_prompt(question, retrieved_chunks)})
+    return _chat_completion(messages, client)
+
+
+def answer_question(
+    question: str,
+    top_k: int = TOP_K,
+    min_score: float = MIN_SCORE,
+    source_filter: str | None = None,
+    history: list[dict] | None = None,
+) -> dict:
     """
     Full RAG pipeline for a single question:
-    1. Load the FAISS index + embedding model
-    2. Retrieve the top_k most relevant chunks
-    3. Generate an answer grounded in those chunks
+    1. Retrieve the top_k most relevant chunks (cached model + index),
+       optionally restricted to one document
+    2. Drop chunks below the relevance threshold
+    3. Generate an answer grounded in the remaining chunks, aware of
+       the recent conversation history
     4. Return the answer along with the sources used (for citation display)
-    """
-    model = get_embedding_model()
-    index, metadata = load_index()
 
-    retrieved_chunks = search(question, index, metadata, model, top_k=top_k)
+    `history` is a list of {"role": "user"|"assistant", "content": str}
+    messages from earlier turns of the conversation.
+    """
+    model, index, metadata = _get_retriever()
+
+    retrieved_chunks = search(
+        question, index, metadata, model,
+        top_k=top_k, min_score=min_score, source_filter=source_filter,
+    )
 
     if not retrieved_chunks:
+        scope = f"in {source_filter}" if source_filter else "in the indexed documents"
         return {
-            "answer": "I couldn't find any relevant information in the indexed documents.",
+            "answer": (
+                f"I couldn't find anything relevant to that question {scope}. "
+                "Try rephrasing, or check that the question is about the "
+                "selected document."
+            ),
             "sources": [],
         }
 
-    client = InferenceClient(token=os.getenv("HF_TOKEN"))
-    answer = generate_answer(question, retrieved_chunks, client)
+    answer = generate_answer(question, retrieved_chunks, _get_client(), history=history)
 
     return {
         "answer": answer,
@@ -105,22 +212,18 @@ def answer_without_rag(question: str) -> str:
     proves the RAG pipeline actually adds value over just asking the
     model directly.
     """
-    client = InferenceClient(token=os.getenv("HF_TOKEN"))
-    response = client.chat_completion(
-        messages=[
+    return _chat_completion(
+        [
             {"role": "system", "content": "Answer the question as best you can."},
             {"role": "user", "content": question},
         ],
-        model=GENERATION_MODEL,
-        max_tokens=400,
-        temperature=0.2,
+        _get_client(),
     )
-    return response.choices[0].message.content
 
 
 if __name__ == "__main__":
-    # Quick manual test: run `python src/rag_pipeline.py` after building
-    # the index with `python src/embeddings.py`
+    # Quick manual test: run `python -m src.rag_pipeline` after building
+    # the index with `python -m src.embeddings`
     test_question = "Can I cancel before the end of the contract?"
     result = answer_question(test_question)
 
@@ -128,4 +231,4 @@ if __name__ == "__main__":
     print(f"Answer: {result['answer']}\n")
     print("Sources used:")
     for src in result["sources"]:
-        print(f"  - {src['source']} (page {src['page']}, distance={src['distance']:.3f})")
+        print(f"  - {src['source']} (page {src['page']}, score={src['score']:.3f})")

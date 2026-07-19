@@ -1,0 +1,7 @@
+# Extra dependencies for the LoRA fine-tuning bonus experiment only.
+# The main app does not need these.
+torch
+transformers
+peft
+datasets
+accelerate
