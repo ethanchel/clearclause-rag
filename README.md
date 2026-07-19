@@ -136,3 +136,7 @@ Evaluated on the 20-question ground-truth set (3 documents), generation running 
 The RAG pipeline more than doubles the answer quality of the same model without retrieval, and retrieves a chunk from the correct source document for every question. The 3/20 questions that miss the exact page all involve clauses spanning a page boundary — the relevant chunk is retrieved but carries the page number where it starts. The two questions where the baseline edges out RAG are short yes/no answers, where ROUGE's n-gram overlap penalizes the RAG answer's longer cited explanation — a known limitation of ROUGE as a correctness metric.
 
 Full per-question results: `evaluation/results.json` (also displayed in the app's Evaluation tab).
+
+### LoRA experiment (bonus)
+
+`./run.sh lora` fine-tunes Qwen2.5-0.5B-Instruct on the legal Q&A pairs with LoRA: only **540k trainable parameters (0.11% of the 494M model)**, training loss 4.0 → 1.8 in 5 epochs, a few seconds on Apple Silicon. On held-out questions, the fine-tuned model adopts the target answer *style* (short, direct, definite) but gets facts wrong (e.g. "30 days" instead of 60 for proof of loss) — an expected outcome with only 18 training pairs, and a good illustration of why this project uses RAG for factual grounding: fine-tuning shapes *how* a model answers, retrieval grounds *what* it answers.

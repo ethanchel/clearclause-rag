@@ -22,13 +22,19 @@ find_python() {
     echo "python3"
 }
 
+pip_install() {
+    # Venvs created by uv ship without pip; bootstrap it on demand.
+    "$PY" -m pip --version >/dev/null 2>&1 || "$PY" -m ensurepip --upgrade >/dev/null
+    "$PY" -m pip install -q "$@"
+}
+
 setup() {
     if [ ! -x "$PY" ]; then
         echo ">> Creating virtual environment..."
         "$(find_python)" -m venv venv
     fi
     echo ">> Installing dependencies..."
-    "$PY" -m pip install -q -r requirements.txt
+    pip_install -r requirements.txt
     if [ ! -f .env ]; then
         cp .env.example .env
         echo ">> Created .env — add your Hugging Face token to it."
@@ -43,7 +49,7 @@ case "${1:-app}" in
     app)   exec "$PY" app.py ;;
     index) exec "$PY" -m src.embeddings ;;
     eval)  exec "$PY" -m evaluation.evaluate ;;
-    lora)  "$PY" -m pip install -q -r finetuning/requirements-lora.txt
+    lora)  pip_install -r finetuning/requirements-lora.txt
            exec "$PY" -m finetuning.lora_finetune ;;
     *)     echo "Usage: ./run.sh [setup|app|index|eval|lora]" >&2; exit 1 ;;
 esac
