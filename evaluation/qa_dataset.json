@@ -1,0 +1,8 @@
+[
+  {
+    "question": "Example: Can I cancel my lease before the end of the contract?",
+    "expected_answer": "Example: Yes, with a minimum notice period as specified in the termination clause.",
+    "expected_source": "example_lease.pdf",
+    "expected_page": 2
+  }
+]
