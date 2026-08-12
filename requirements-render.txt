@@ -1,0 +1,11 @@
+# Lightweight dependency set for the Render free tier (512 MB RAM).
+# No torch / sentence-transformers / transformers: query embeddings and
+# generation both go through the Hugging Face Inference API
+# (EMBEDDINGS_VIA_API=1). See requirements.txt for the full local setup.
+gradio
+pypdf
+faiss-cpu
+huggingface_hub
+python-dotenv
+pandas
+numpy

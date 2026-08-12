@@ -15,7 +15,18 @@ Three tabs:
 Run locally from the project root with: python app.py
 """
 
+# On Hugging Face Spaces (ZeroGPU hosting), the `spaces` package must be
+# imported before torch-touching imports, and the app must define at least
+# one @spaces.GPU function — even though ClearClause does its real work on
+# CPU (FAISS + embeddings) and the Inference API. Locally the package is
+# absent and everything below is skipped.
+try:
+    import spaces
+except ImportError:
+    spaces = None
+
 import json
+import os
 from pathlib import Path
 
 import gradio as gr
@@ -27,6 +38,14 @@ from src.rag_pipeline import (
     list_documents,
     warm_up,
 )
+
+if spaces is not None:
+
+    @spaces.GPU(duration=10)
+    def _zerogpu_placeholder():
+        """Required by ZeroGPU hosting; never called by the app."""
+        return "ok"
+
 
 ALL_DOCUMENTS = "All documents"
 
@@ -243,4 +262,9 @@ if __name__ == "__main__":
     except FileNotFoundError as exc:
         print(f"Warning: {exc}")
 
-    demo.launch()
+    if os.getenv("RENDER"):
+        # Render routes traffic to the port in $PORT and requires
+        # binding on all interfaces.
+        demo.launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 7860)))
+    else:
+        demo.launch()

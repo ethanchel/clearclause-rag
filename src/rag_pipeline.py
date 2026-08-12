@@ -157,6 +157,13 @@ _api_disabled = False
 
 def _local_chat_completion(messages: list[dict]) -> str:
     """Generate an answer with the local fallback model."""
+    try:
+        import transformers  # noqa: F401
+    except ImportError:
+        raise RuntimeError(
+            "The generation API is unavailable and the local fallback model "
+            "is not installed on this deployment. Please try again later."
+        ) from None
     generator = _get_local_generator()
     output = generator(
         messages,

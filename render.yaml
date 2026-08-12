@@ -1,0 +1,17 @@
+# Render Blueprint: deploys the ClearClause demo on the free tier.
+# The heavy models never load here — query embeddings and generation
+# both run through the Hugging Face Inference API (HF_TOKEN secret).
+services:
+  - type: web
+    name: clearclause
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements-render.txt
+    startCommand: python app.py
+    envVars:
+      - key: EMBEDDINGS_VIA_API
+        value: "1"
+      - key: HF_TOKEN
+        sync: false # secret: set its value in the Render dashboard
+      - key: PYTHON_VERSION
+        value: "3.12.6"

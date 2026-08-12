@@ -16,22 +16,63 @@ range from -1 to 1, and higher = more similar — which also makes it
 easy to apply a minimum relevance threshold at search time.
 """
 
+from __future__ import annotations
+
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
 
 import faiss
 import numpy as np
-from sentence_transformers import SentenceTransformer
+
+# sentence-transformers (and its torch dependency) is optional: memory-
+# constrained deployments (e.g. Render's free tier) skip it and embed
+# queries through the Hugging Face Inference API instead — same model,
+# same vectors, a fraction of the memory footprint.
+try:
+    from sentence_transformers import SentenceTransformer
+except ImportError:
+    SentenceTransformer = None
 
 from src.ingestion import Chunk, process_directory
 
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
+# Fully-qualified name required by the Inference API.
+API_EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 INDEX_DIR = "data/processed"
 
 
+class ApiEmbedder:
+    """
+    Drop-in replacement for SentenceTransformer.encode() that computes
+    embeddings through the Hugging Face Inference API. Used when the
+    EMBEDDINGS_VIA_API env var is set, or when sentence-transformers is
+    not installed. Same model as the local path, so the vectors are
+    interchangeable with the prebuilt FAISS index.
+    """
+
+    def __init__(self, model_name: str = API_EMBEDDING_MODEL_NAME):
+        from huggingface_hub import InferenceClient
+
+        self.model_name = model_name
+        self.client = InferenceClient(token=os.getenv("HF_TOKEN"))
+
+    def encode(self, texts, convert_to_numpy=True, normalize_embeddings=True, **kwargs):
+        vectors = np.asarray(
+            [self.client.feature_extraction(t, model=self.model_name) for t in texts],
+            dtype="float32",
+        )
+        if vectors.ndim == 3:  # some providers return token-level embeddings
+            vectors = vectors.mean(axis=1)
+        if normalize_embeddings:
+            norms = np.linalg.norm(vectors, axis=1, keepdims=True)
+            vectors = vectors / np.clip(norms, 1e-12, None)
+        return vectors
+
+
 @lru_cache(maxsize=1)
-def get_embedding_model(model_name: str = EMBEDDING_MODEL_NAME) -> SentenceTransformer:
+def get_embedding_model(model_name: str = EMBEDDING_MODEL_NAME) -> SentenceTransformer | ApiEmbedder:
     """
     Load the sentence-transformers embedding model (cached: loading the
     model takes a few seconds, so it must happen once per process, not
@@ -40,7 +81,13 @@ def get_embedding_model(model_name: str = EMBEDDING_MODEL_NAME) -> SentenceTrans
     all-MiniLM-L6-v2 is small (~80MB), fast, runs on CPU, and produces
     384-dimensional embeddings — a solid default for a project that
     needs to run without a GPU and deploy easily on HF Spaces.
+
+    When EMBEDDINGS_VIA_API is set (or sentence-transformers is not
+    installed), queries are embedded through the Inference API instead.
     """
+    if os.getenv("EMBEDDINGS_VIA_API") or SentenceTransformer is None:
+        print("Embedding queries via the Hugging Face Inference API.")
+        return ApiEmbedder()
     return SentenceTransformer(model_name)
 
 
